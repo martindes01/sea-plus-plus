@@ -1,0 +1,2 @@
+# Specify diff drivers
+*.ino   diff=cpp
