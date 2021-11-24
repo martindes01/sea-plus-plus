@@ -16,14 +16,12 @@ constexpr int rudderStep{ 5 };
 
 static Servo s_rudder{};
 
-static int s_rudderAngle = rudderCentre;
-
 void setup()
 {
   IrReceiver.begin(irReceiverPin, ENABLE_LED_FEEDBACK);
 
   s_rudder.attach(servoPin);
-  s_rudder.write(s_rudderAngle);
+  s_rudder.write(rudderCentre);
 }
 
 void loop()
@@ -34,15 +32,14 @@ void loop()
     {
     case rudderCentreCommand:
       s_rudder.write(rudderCentre);
-      s_rudderAngle = rudderCentre;
       break;
 
     case rudderPortCommand:
-      s_rudder.write(s_rudderAngle += rudderStep);
+      s_rudder.write(s_rudder.read() + rudderStep);
       break;
 
     case rudderStarboardCommand:
-      s_rudder.write(s_rudderAngle -= rudderStep);
+      s_rudder.write(s_rudder.read() - rudderStep);
       break;
 
     case throttleDecreaseCommand:
