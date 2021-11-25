@@ -2,6 +2,9 @@
 #include <Servo.h>
 
 constexpr uint8_t irReceiverPin{ 3 };
+constexpr uint8_t motorForwardPin{ 6 };
+constexpr uint8_t motorReversePin{ 7 };
+constexpr uint8_t motorThrottlePin{ 5 };
 constexpr uint8_t servoPin{ 9 };
 
 constexpr uint32_t rudderCentreCommand{ 0x00FF02FDU };
@@ -13,12 +16,21 @@ constexpr uint32_t throttleIncreaseCommand{ 0x00FF629DU };
 constexpr unsigned long loopDelay{ 50UL };
 constexpr int rudderCentre{ 90 };
 constexpr int rudderStep{ 5 };
+constexpr int throttleStep{ 64 };
 
 static Servo s_rudder{};
 
 void setup()
 {
   IrReceiver.begin(irReceiverPin, ENABLE_LED_FEEDBACK);
+
+  pinMode(motorForwardPin, OUTPUT);
+  pinMode(motorReversePin, OUTPUT);
+  pinMode(motorThrottlePin, OUTPUT);
+
+  digitalWrite(motorForwardPin, HIGH);
+  digitalWrite(motorReversePin, LOW);
+  digitalWrite(motorThrottlePin, HIGH);
 
   s_rudder.attach(servoPin);
   s_rudder.write(rudderCentre);
@@ -43,9 +55,11 @@ void loop()
       break;
 
     case throttleDecreaseCommand:
+      digitalWrite(motorThrottlePin, LOW);
       break;
 
     case throttleIncreaseCommand:
+      digitalWrite(motorThrottlePin, HIGH);
       break;
     }
 
