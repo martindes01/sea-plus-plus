@@ -20,6 +20,8 @@ constexpr int throttleStep{ 64 };
 
 static Servo s_rudder{};
 
+static int s_throttle{ 255 };
+
 void setup()
 {
   IrReceiver.begin(irReceiverPin, ENABLE_LED_FEEDBACK);
@@ -55,11 +57,11 @@ void loop()
       break;
 
     case throttleDecreaseCommand:
-      digitalWrite(motorThrottlePin, LOW);
+      analogWrite(motorThrottlePin, s_throttle -= throttleStep);
       break;
 
     case throttleIncreaseCommand:
-      digitalWrite(motorThrottlePin, HIGH);
+      analogWrite(motorThrottlePin, s_throttle += throttleStep);
       break;
     }
 
