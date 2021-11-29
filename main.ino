@@ -1,11 +1,7 @@
+#include "src/pins.h"
+
 #include <IRremote.h>
 #include <Servo.h>
-
-constexpr uint8_t irReceiverPin{ 3 };
-constexpr uint8_t motorForwardPin{ 6 };
-constexpr uint8_t motorReversePin{ 7 };
-constexpr uint8_t motorThrottlePin{ 5 };
-constexpr uint8_t servoPin{ 9 };
 
 constexpr uint32_t rudderCentreCommand{ 0x00FF02FDU };
 constexpr uint32_t rudderPortCommand{ 0x00FF22DDU };
@@ -22,17 +18,17 @@ static Servo s_rudder{};
 
 void setup()
 {
-  IrReceiver.begin(irReceiverPin, ENABLE_LED_FEEDBACK);
+  IrReceiver.begin(pins::irReceiver, ENABLE_LED_FEEDBACK);
 
-  pinMode(motorForwardPin, OUTPUT);
-  pinMode(motorReversePin, OUTPUT);
-  pinMode(motorThrottlePin, OUTPUT);
+  pinMode(pins::motorForward, OUTPUT);
+  pinMode(pins::motorReverse, OUTPUT);
+  pinMode(pins::motorThrottle, OUTPUT);
 
-  digitalWrite(motorForwardPin, HIGH);
-  digitalWrite(motorReversePin, LOW);
-  digitalWrite(motorThrottlePin, HIGH);
+  digitalWrite(pins::motorForward, HIGH);
+  digitalWrite(pins::motorReverse, LOW);
+  digitalWrite(pins::motorThrottle, HIGH);
 
-  s_rudder.attach(servoPin);
+  s_rudder.attach(pins::servo);
   s_rudder.write(rudderCentre);
 }
 
@@ -55,11 +51,11 @@ void loop()
       break;
 
     case throttleDecreaseCommand:
-      analogWrite(motorThrottlePin, analogRead(motorThrottlePin) - throttleStep);
+      analogWrite(pins::motorThrottle, analogRead(pins::motorThrottle) - throttleStep);
       break;
 
     case throttleIncreaseCommand:
-      analogWrite(motorThrottlePin, analogRead(motorThrottlePin) + throttleStep);
+      analogWrite(pins::motorThrottle, analogRead(pins::motorThrottle) + throttleStep);
       break;
     }
 
