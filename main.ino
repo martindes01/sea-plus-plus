@@ -1,13 +1,8 @@
+#include "src/commands.h"
 #include "src/pins.h"
 
 #include <IRremote.h>
 #include <Servo.h>
-
-constexpr uint32_t rudderCentreCommand{ 0x00FF02FDU };
-constexpr uint32_t rudderPortCommand{ 0x00FF22DDU };
-constexpr uint32_t rudderStarboardCommand{ 0x00FFC23DU };
-constexpr uint32_t throttleDecreaseCommand{ 0x00FFA857U };
-constexpr uint32_t throttleIncreaseCommand{ 0x00FF629DU };
 
 constexpr unsigned long loopDelay{ 50UL };
 constexpr int rudderCentre{ 90 };
@@ -38,23 +33,23 @@ void loop()
   {
     switch (IrReceiver.decodedIRData.decodedRawData)
     {
-    case rudderCentreCommand:
+    case commands::rudderCentre:
       s_rudder.write(rudderCentre);
       break;
 
-    case rudderPortCommand:
+    case commands::rudderPort:
       s_rudder.write(s_rudder.read() + rudderStep);
       break;
 
-    case rudderStarboardCommand:
+    case commands::rudderStarboard:
       s_rudder.write(s_rudder.read() - rudderStep);
       break;
 
-    case throttleDecreaseCommand:
+    case commands::throttleDecrease:
       analogWrite(pins::motorThrottle, analogRead(pins::motorThrottle) - throttleStep);
       break;
 
-    case throttleIncreaseCommand:
+    case commands::throttleIncrease:
       analogWrite(pins::motorThrottle, analogRead(pins::motorThrottle) + throttleStep);
       break;
     }
