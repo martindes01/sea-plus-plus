@@ -1,15 +1,13 @@
 #include "src/commands.h"
 #include "src/pins.h"
+#include "src/rudder.h"
 
 #include <IRremote.h>
-#include <Servo.h>
 
 constexpr unsigned long loopDelay{ 50UL };
-constexpr int rudderCentre{ 90 };
-constexpr int rudderStep{ 5 };
 constexpr int throttleStep{ 64 };
 
-static Servo s_rudder{};
+static control::Rudder s_rudder{ pins::servo };
 
 void setup()
 {
@@ -23,8 +21,7 @@ void setup()
   digitalWrite(pins::motorReverse, LOW);
   digitalWrite(pins::motorThrottle, HIGH);
 
-  s_rudder.attach(pins::servo);
-  s_rudder.write(rudderCentre);
+  s_rudder.setup();
 }
 
 void loop()
@@ -34,15 +31,15 @@ void loop()
     switch (IrReceiver.decodedIRData.decodedRawData)
     {
     case commands::rudderCentre:
-      s_rudder.write(rudderCentre);
+      s_rudder.centre();
       break;
 
     case commands::rudderPort:
-      s_rudder.write(s_rudder.read() + rudderStep);
+      s_rudder.turnToPort();
       break;
 
     case commands::rudderStarboard:
-      s_rudder.write(s_rudder.read() - rudderStep);
+      s_rudder.turnToStarboard();
       break;
 
     case commands::throttleDecrease:
